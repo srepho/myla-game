@@ -1,0 +1,11 @@
+# Session / internal dev notes
+NEXT_SESSION.md
+SESSION_HISTORY.md
+*_internal.md
+
+# Secrets & env
+.env*
+credentials.json
+
+# OS noise
+.DS_Store

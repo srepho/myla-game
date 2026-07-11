@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Myla's Magic Kingdom 🦄</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sky1:#cdb4f7; --sky2:#ffc6e7; --sky3:#fff1c9;
+    --candy-pink:#ff8fc8; --candy-purple:#b98fff; --candy-blue:#7fc4ff;
+    --candy-mint:#7fe8c0; --candy-sun:#ffd66e; --candy-peach:#ffb199;
+    --ink:#5a3d7a; --white:#fffdfa;
+    --shadow:0 8px 0 rgba(90,61,122,.18);
+    --font:'Baloo 2','Comic Sans MS','Chalkboard SE',sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;overflow:hidden;}
+  body{
+    font-family:var(--font);color:var(--ink);
+    background:linear-gradient(180deg,var(--sky1) 0%,var(--sky2) 55%,var(--sky3) 100%);
+    user-select:none;-webkit-user-select:none;touch-action:manipulation;
+  }
+
+  /* ---------- drifting clouds & sparkle atmosphere ---------- */
+  .cloud{position:fixed;font-size:9vmin;opacity:.8;filter:blur(.5px);pointer-events:none;z-index:0;
+    animation:drift linear infinite;}
+  @keyframes drift{from{transform:translateX(-20vw)}to{transform:translateX(120vw)}}
+  .twinkle{position:fixed;pointer-events:none;z-index:0;font-size:3vmin;opacity:.6;
+    animation:twinkleAnim 3s ease-in-out infinite;}
+  @keyframes twinkleAnim{0%,100%{opacity:.15;transform:scale(.7)}50%{opacity:.8;transform:scale(1.15)}}
+
+  /* ---------- screens ---------- */
+  .screen{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;z-index:1;}
+  .screen.active{display:flex;}
+
+  /* ---------- shared chunky button ---------- */
+  .btn{
+    font-family:var(--font);font-weight:800;color:var(--ink);
+    background:var(--white);border:5px solid var(--white);border-radius:32px;
+    box-shadow:var(--shadow);cursor:pointer;
+    transition:transform .12s ease;
+  }
+  .btn:active{transform:scale(.92) rotate(-2deg);}
+
+  .corner-btn{
+    position:absolute;top:12px;font-size:7vmin;line-height:1;
+    width:13vmin;height:13vmin;min-width:56px;min-height:56px;
+    border-radius:50%;z-index:50;display:flex;align-items:center;justify-content:center;
+  }
+  .home-btn{left:12px;background:var(--candy-sun);}
+  .sound-btn{right:12px;background:var(--candy-mint);}
+
+  /* ---------- HOME ---------- */
+  #home{justify-content:center;gap:2vmin;}
+  .title{
+    font-size:9.5vmin;font-weight:800;text-align:center;line-height:1.05;margin-top:1vmin;
+    background:linear-gradient(90deg,#ff5fa8,#ff9d5c,#ffd23f,#5cd68a,#4fb8ff,#a06bff);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 3px 0 rgba(255,255,255,.9)) drop-shadow(0 6px 0 rgba(90,61,122,.15));
+    animation:titleBob 3s ease-in-out infinite;
+  }
+  @keyframes titleBob{0%,100%{transform:rotate(-1.5deg)}50%{transform:rotate(1.5deg) translateY(-6px)}}
+  .subtitle{font-size:4vmin;opacity:.75;margin-bottom:1vmin;}
+  .menu{display:flex;flex-wrap:wrap;justify-content:center;gap:3vmin;max-width:92vw;}
+  .card{
+    width:34vmin;height:30vmin;min-width:150px;min-height:130px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5vmin;
+    animation:cardFloat 3.4s ease-in-out infinite;
+  }
+  .card:nth-child(2){animation-delay:.4s}.card:nth-child(3){animation-delay:.8s}
+  .card:nth-child(4){animation-delay:1.2s}.card:nth-child(5){animation-delay:1.6s}
+  @keyframes cardFloat{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-8px) rotate(1deg)}}
+  .card .big{font-size:13vmin;line-height:1;}
+  .card .label{font-size:3.4vmin;font-weight:800;}
+  .card.c-pop{background:#ffe3f1;}
+  .card.c-uni{background:#ecdffd;}
+  .card.c-castle{background:#dff0ff;}
+  .card.c-letters{background:#e0f9ee;}
+  .card.c-leah{background:#fff3d1;}
+
+  /* ---------- generic game header ---------- */
+  .game-title{margin-top:2.5vmin;font-size:5.5vmin;font-weight:800;
+    background:var(--white);padding:.6vmin 4vmin;border-radius:40px;box-shadow:var(--shadow);}
+
+  /* ---------- STAR POP ---------- */
+  #pop-area{position:relative;flex:1;width:100%;overflow:hidden;}
+  .floater{
+    position:absolute;bottom:-20vmin;font-size:12vmin;line-height:1;cursor:pointer;z-index:2;
+    padding:4vmin; /* generous invisible hit area for little fingers */
+    animation:floatUp linear forwards;
+  }
+  @keyframes floatUp{
+    0%{transform:translateY(0) rotate(-8deg)}
+    50%{transform:translateY(-58vh) rotate(8deg)}
+    100%{transform:translateY(-125vh) rotate(-8deg)}
+  }
+  #rainbow-meter{display:flex;gap:1.6vmin;margin:1.2vmin 0;z-index:5;}
+  .meter-dot{width:5vmin;height:5vmin;min-width:26px;min-height:26px;border-radius:50%;
+    background:rgba(255,255,255,.55);border:3px solid var(--white);box-shadow:var(--shadow);
+    transition:background .3s,transform .3s;}
+  .meter-dot.filled{transform:scale(1.2);}
+
+  .flyby{position:fixed;top:30vh;left:-30vw;font-size:16vmin;z-index:90;pointer-events:none;
+    animation:flyAcross 3.2s ease-in-out forwards;}
+  @keyframes flyAcross{
+    0%{transform:translateX(0) rotate(-6deg)}
+    50%{transform:translateX(60vw) translateY(-8vh) rotate(6deg)}
+    100%{transform:translateX(150vw) rotate(-6deg)}
+  }
+
+  /* ---------- particles ---------- */
+  .particle{position:absolute;pointer-events:none;font-size:5vmin;line-height:1;z-index:60;
+    animation:burst .9s ease-out forwards;}
+  @keyframes burst{
+    from{transform:translate(0,0) scale(1);opacity:1}
+    to{transform:translate(var(--dx),var(--dy)) scale(.2) rotate(180deg);opacity:0}
+  }
+
+  /* ---------- UNICORN DRESS-UP ---------- */
+  #uni-stage{
+    position:relative;flex:1;width:min(94vw,900px);margin:1vmin 0;border-radius:36px;
+    border:6px solid var(--white);box-shadow:var(--shadow);overflow:hidden;
+    display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(180deg,#bfe3ff 0%,#e6f6ff 60%,#b9ecb4 60%,#8fd98a 100%);
+  }
+  #uni-stage.bg-rainbow{
+    background:
+      radial-gradient(circle at 50% 118%, transparent 54%, #ff5fa8 54.5%, #ff5fa8 58%, #ff9d5c 58.5%, #ff9d5c 62%, #ffd23f 62.5%, #ffd23f 66%, #5cd68a 66.5%, #5cd68a 70%, #4fb8ff 70.5%, #4fb8ff 74%, #a06bff 74.5%, #a06bff 78%, transparent 78.5%),
+      linear-gradient(180deg,#cfe9ff 0%,#f2fbff 60%,#b9ecb4 60%,#8fd98a 100%);
+  }
+  #uni-stage.bg-night{
+    background:
+      radial-gradient(2px 2px at 20% 25%, #fff 60%, transparent 62%),
+      radial-gradient(2px 2px at 70% 15%, #fff 60%, transparent 62%),
+      radial-gradient(2px 2px at 45% 35%, #fff 60%, transparent 62%),
+      radial-gradient(2px 2px at 85% 40%, #fff 60%, transparent 62%),
+      radial-gradient(3px 3px at 30% 12%, #ffe9a8 60%, transparent 62%),
+      linear-gradient(180deg,#3d2f6b 0%,#6a4d9e 60%,#2e5d4e 60%,#1f4a3c 100%);
+  }
+  #unicorn-svg{width:min(72vmin,520px);cursor:pointer;filter:drop-shadow(0 10px 6px rgba(90,61,122,.2));}
+  #unicorn-svg.bounce{animation:uniBounce .6s ease;}
+  @keyframes uniBounce{0%,100%{transform:translateY(0)}30%{transform:translateY(-5vmin) rotate(-3deg)}60%{transform:translateY(0) rotate(2deg)}80%{transform:translateY(-1.5vmin)}}
+
+  #uni-tray{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:2vmin;
+    padding:1.4vmin 2vmin;margin-bottom:2vmin;background:rgba(255,255,255,.65);
+    border-radius:40px;box-shadow:var(--shadow);max-width:94vw;}
+  .swatch{width:9vmin;height:9vmin;min-width:44px;min-height:44px;border-radius:50%;
+    border:4px solid var(--white);box-shadow:0 4px 0 rgba(90,61,122,.18);cursor:pointer;
+    transition:transform .12s;}
+  .swatch:active{transform:scale(.88);}
+  .swatch.selected{transform:scale(1.18);border-color:var(--candy-sun);}
+  .tray-btn{font-size:6vmin;width:11vmin;height:11vmin;min-width:52px;min-height:52px;border-radius:28px;
+    display:flex;align-items:center;justify-content:center;}
+
+  /* ---------- CASTLE STICKERS ---------- */
+  #castle-scene{
+    position:relative;flex:1;width:min(94vw,1000px);margin:1vmin 0;border-radius:36px;
+    border:6px solid var(--white);box-shadow:var(--shadow);overflow:hidden;cursor:pointer;
+  }
+  #castle-scene svg.bg{position:absolute;inset:0;width:100%;height:100%;}
+  .sticker{position:absolute;font-size:12vmin;line-height:1;pointer-events:none;
+    transform:translate(-50%,-50%) scale(0) rotate(var(--rot));
+    animation:stampIn .35s cubic-bezier(.34,1.56,.64,1) forwards;}
+  @keyframes stampIn{to{transform:translate(-50%,-50%) scale(1) rotate(var(--rot));}}
+  #sticker-tray{display:flex;flex-wrap:wrap;justify-content:center;gap:1.6vmin;
+    padding:1.2vmin 2vmin;margin-bottom:2vmin;background:rgba(255,255,255,.65);
+    border-radius:40px;box-shadow:var(--shadow);max-width:94vw;}
+  .tray-sticker{font-size:8vmin;line-height:1;width:12vmin;height:12vmin;min-width:54px;min-height:54px;
+    border-radius:26px;display:flex;align-items:center;justify-content:center;background:transparent;
+    border:4px solid transparent;box-shadow:none;}
+  .tray-sticker.selected{background:var(--white);border-color:var(--candy-sun);
+    box-shadow:var(--shadow);animation:wiggle .5s ease infinite;}
+  @keyframes wiggle{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+
+  /* ---------- LETTER BUBBLES ---------- */
+  #letter-target{
+    font-size:16vmin;font-weight:800;width:26vmin;height:26vmin;min-width:110px;min-height:110px;
+    display:flex;align-items:center;justify-content:center;margin-top:1vmin;
+    background:var(--white);border-radius:50%;box-shadow:var(--shadow);
+    border:6px dashed var(--candy-pink);color:var(--candy-purple);cursor:pointer;
+  }
+  #letter-name-row{display:flex;gap:1.2vmin;margin-top:1vmin;font-size:5vmin;font-weight:800;}
+  #letter-name-row span{width:8vmin;height:8vmin;min-width:38px;min-height:38px;border-radius:16px;
+    display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.5);
+    color:rgba(90,61,122,.35);box-shadow:var(--shadow);}
+  #letter-name-row span.won{background:var(--candy-sun);color:var(--ink);animation:popWin .4s ease;}
+  @keyframes popWin{50%{transform:scale(1.35) rotate(8deg)}}
+  #letter-bubbles{flex:1;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;
+    gap:4vmin;width:100%;padding:2vmin;}
+  .bubble{
+    font-size:13vmin;font-weight:800;width:24vmin;height:24vmin;min-width:100px;min-height:100px;
+    border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--white);
+    border:6px solid var(--white);box-shadow:var(--shadow);cursor:pointer;
+    animation:bubbleFloat 3s ease-in-out infinite;
+  }
+  .bubble:nth-child(2){animation-delay:.5s}.bubble:nth-child(3){animation-delay:1s}
+  .bubble:nth-child(4){animation-delay:1.5s}
+  @keyframes bubbleFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-2.5vmin)}}
+  .bubble.wrong{animation:wobble .5s ease;}
+  @keyframes wobble{0%,100%{transform:translateX(0)}25%{transform:translateX(-2vmin) rotate(-5deg)}
+    75%{transform:translateX(2vmin) rotate(5deg)}}
+
+  /* ---------- LEAH MODE ---------- */
+  #leah-area{position:relative;flex:1;width:100%;cursor:pointer;}
+  #leah-hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-size:22vmin;pointer-events:none;animation:hintPulse 1.6s ease-in-out infinite;opacity:.8;}
+  @keyframes hintPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}
+  .friend{position:absolute;font-size:14vmin;line-height:1;pointer-events:none;
+    transform:translate(-50%,-50%);animation:friendBounce 1.6s ease forwards;}
+  @keyframes friendBounce{
+    0%{transform:translate(-50%,-50%) scale(0)}
+    30%{transform:translate(-50%,-70%) scale(1.2)}
+    55%{transform:translate(-50%,-50%) scale(1)}
+    75%{transform:translate(-50%,-60%) scale(1.05)}
+    100%{transform:translate(-50%,-50%) scale(0);opacity:0}
+  }
+
+  .celebrate-banner{position:fixed;top:38vh;left:0;right:0;text-align:center;z-index:95;
+    font-size:12vmin;font-weight:800;pointer-events:none;
+    background:linear-gradient(90deg,#ff5fa8,#ffd23f,#4fb8ff,#a06bff);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 3px 0 #fff);animation:bannerIn 2.6s ease forwards;}
+  @keyframes bannerIn{0%{transform:scale(0)}20%{transform:scale(1.15)}30%{transform:scale(1)}
+    80%{transform:scale(1);opacity:1}100%{transform:scale(1.4);opacity:0}}
+</style>
+</head>
+<body>
+
+<!-- ambient clouds & sparkles injected by JS -->
+
+<!-- ============ HOME ============ -->
+<div class="screen active" id="home">
+  <button class="btn corner-btn sound-btn" id="sound-toggle" aria-label="sound on or off">🔊</button>
+  <div class="title">Myla's Magic<br>Kingdom</div>
+  <div class="subtitle">✨ tap a picture to play ✨</div>
+  <div class="menu">
+    <button class="btn card c-pop" data-go="pop"><span class="big">⭐</span><span class="label">Star Pop</span></button>
+    <button class="btn card c-uni" data-go="uni"><span class="big">🦄</span><span class="label">Dress-Up</span></button>
+    <button class="btn card c-castle" data-go="castle"><span class="big">🏰</span><span class="label">Stickers</span></button>
+    <button class="btn card c-letters" data-go="letters"><span class="big">🔤</span><span class="label">Letters</span></button>
+    <button class="btn card c-leah" data-go="leah"><span class="big">👶</span><span class="label">Leah's Sparkles</span></button>
+  </div>
+</div>
+
+<!-- ============ STAR POP ============ -->
+<div class="screen" id="pop">
+  <button class="btn corner-btn home-btn" data-go="home">🏠</button>
+  <div class="game-title">⭐ Star Pop!</div>
+  <div id="rainbow-meter"></div>
+  <div id="pop-area"></div>
+</div>
+
+<!-- ============ UNICORN DRESS-UP ============ -->
+<div class="screen" id="uni">
+  <button class="btn corner-btn home-btn" data-go="home">🏠</button>
+  <div class="game-title">🦄 Dress-Up!</div>
+  <div id="uni-stage">
+    <svg id="unicorn-svg" viewBox="0 0 420 340" xmlns="http://www.w3.org/2000/svg">
+      <!-- wings (toggle) -->
+      <g id="uni-wings" style="display:none">
+        <ellipse cx="150" cy="140" rx="58" ry="24" transform="rotate(-38 150 140)" fill="#fffdfa" stroke="#f0c85a" stroke-width="3"/>
+        <ellipse cx="132" cy="158" rx="48" ry="19" transform="rotate(-24 132 158)" fill="#fff3fb" stroke="#f0c85a" stroke-width="3"/>
+        <ellipse cx="122" cy="176" rx="38" ry="15" transform="rotate(-10 122 176)" fill="#fffdfa" stroke="#f0c85a" stroke-width="3"/>
+      </g>
+      <!-- tail -->
+      <circle class="mane" cx="102" cy="192" r="26"/>
+      <circle class="mane" cx="90" cy="166" r="20"/>
+      <circle class="mane" cx="106" cy="146" r="15"/>
+      <!-- back legs -->
+      <rect x="150" y="232" width="22" height="60" rx="11" fill="#fffdfa" stroke="#eed9f0" stroke-width="3"/>
+      <rect x="240" y="232" width="22" height="60" rx="11" fill="#fffdfa" stroke="#eed9f0" stroke-width="3"/>
+      <rect x="150" y="279" width="22" height="14" rx="7" fill="#f0c85a"/>
+      <rect x="240" y="279" width="22" height="14" rx="7" fill="#f0c85a"/>
+      <!-- body -->
+      <ellipse cx="200" cy="200" rx="88" ry="62" fill="#fffdfa" stroke="#eed9f0" stroke-width="4"/>
+      <!-- front legs -->
+      <rect x="180" y="238" width="22" height="56" rx="11" fill="#fffdfa" stroke="#eed9f0" stroke-width="3"/>
+      <rect x="212" y="238" width="22" height="56" rx="11" fill="#fffdfa" stroke="#eed9f0" stroke-width="3"/>
+      <rect x="180" y="281" width="22" height="14" rx="7" fill="#f0c85a"/>
+      <rect x="212" y="281" width="22" height="14" rx="7" fill="#f0c85a"/>
+      <!-- neck & head -->
+      <ellipse cx="262" cy="142" rx="34" ry="54" transform="rotate(-18 262 142)" fill="#fffdfa" stroke="#eed9f0" stroke-width="4"/>
+      <circle cx="292" cy="98" r="40" fill="#fffdfa" stroke="#eed9f0" stroke-width="4"/>
+      <ellipse cx="322" cy="114" rx="23" ry="16" fill="#fff0f5" stroke="#eed9f0" stroke-width="3"/>
+      <circle cx="330" cy="112" r="2.6" fill="#d78bb0"/>
+      <path d="M318 122 q 8 8 17 2" stroke="#d78bb0" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <!-- ear -->
+      <polygon points="264,66 276,30 288,66" fill="#fffdfa" stroke="#eed9f0" stroke-width="3"/>
+      <polygon points="270,62 276,42 282,62" fill="#ffd6ec"/>
+      <!-- hats (behind horn) -->
+      <g id="hat-crown" class="hat" style="display:none">
+        <polygon points="258,56 258,26 271,42 282,14 293,42 306,26 306,56" fill="#ffd23f" stroke="#e8a91c" stroke-width="3" stroke-linejoin="round"/>
+        <circle cx="271" cy="49" r="3.5" fill="#ff5fa8"/><circle cx="282" cy="49" r="3.5" fill="#4fb8ff"/><circle cx="293" cy="49" r="3.5" fill="#5cd68a"/>
+      </g>
+      <g id="hat-bow" class="hat" style="display:none">
+        <polygon points="278,42 252,26 252,56" fill="#ff8fc8" stroke="#e05f9e" stroke-width="3" stroke-linejoin="round"/>
+        <polygon points="278,42 304,26 304,56" fill="#ff8fc8" stroke="#e05f9e" stroke-width="3" stroke-linejoin="round"/>
+        <circle cx="278" cy="42" r="8" fill="#ffd6ec" stroke="#e05f9e" stroke-width="3"/>
+      </g>
+      <g id="hat-party" class="hat" style="display:none">
+        <polygon points="262,52 284,-4 306,52" fill="#7fc4ff" stroke="#4a98d8" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M270 32 L 298 32" stroke="#ffd23f" stroke-width="6"/>
+        <path d="M266 44 L 302 44" stroke="#ff8fc8" stroke-width="6"/>
+        <circle cx="284" cy="-2" r="7" fill="#ffd23f"/>
+      </g>
+      <!-- horn -->
+      <defs>
+        <linearGradient id="horngrad" x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0" stop-color="#ffd23f"/><stop offset="1" stop-color="#ffedb0"/>
+        </linearGradient>
+      </defs>
+      <polygon points="302,60 316,8 322,60" fill="url(#horngrad)" stroke="#e8a91c" stroke-width="2.5" stroke-linejoin="round"/>
+      <!-- mane -->
+      <circle class="mane m1" cx="266" cy="56" r="16"/>
+      <circle class="mane m2" cx="250" cy="78" r="18"/>
+      <circle class="mane m3" cx="238" cy="104" r="18"/>
+      <circle class="mane m4" cx="230" cy="132" r="16"/>
+      <circle class="mane m5" cx="226" cy="158" r="13"/>
+      <circle class="mane m1" cx="290" cy="60" r="12"/>
+      <!-- face -->
+      <circle cx="288" cy="96" r="6.5" fill="#3a2b45"/>
+      <circle cx="290.5" cy="93.5" r="2.2" fill="#fff"/>
+      <circle cx="302" cy="122" r="7" fill="#ffb3d1" opacity=".65"/>
+    </svg>
+  </div>
+  <div id="uni-tray">
+    <div class="swatch selected" data-mane="pink"   style="background:#ff8fc8"></div>
+    <div class="swatch" data-mane="purple" style="background:#b98fff"></div>
+    <div class="swatch" data-mane="blue"   style="background:#7fc4ff"></div>
+    <div class="swatch" data-mane="mint"   style="background:#7fe8c0"></div>
+    <div class="swatch" data-mane="sunny"  style="background:#ffd66e"></div>
+    <div class="swatch" data-mane="rainbow" style="background:conic-gradient(#ff5fa8,#ff9d5c,#ffd23f,#5cd68a,#4fb8ff,#a06bff,#ff5fa8)"></div>
+    <button class="btn tray-btn" id="hat-btn" title="hat">👑</button>
+    <button class="btn tray-btn" id="wings-btn" title="wings">🦋</button>
+    <button class="btn tray-btn" id="bg-btn" title="background">🌈</button>
+  </div>
+</div>
+
+<!-- ============ CASTLE STICKERS ============ -->
+<div class="screen" id="castle">
+  <button class="btn corner-btn home-btn" data-go="home">🏠</button>
+  <div class="game-title">🏰 Castle Stickers!</div>
+  <div id="castle-scene">
+    <svg class="bg" viewBox="0 0 800 500" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="cs-sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#a8d8ff"/><stop offset="1" stop-color="#ffe9f5"/>
+        </linearGradient>
+      </defs>
+      <rect width="800" height="500" fill="url(#cs-sky)"/>
+      <circle cx="700" cy="80" r="46" fill="#ffd23f"/>
+      <circle cx="700" cy="80" r="60" fill="#ffd23f" opacity=".3"/>
+      <!-- rainbow -->
+      <g fill="none" stroke-width="14">
+        <path d="M40 500 A 260 260 0 0 1 560 500" stroke="#ff5fa8"/>
+        <path d="M54 500 A 246 246 0 0 1 546 500" stroke="#ff9d5c"/>
+        <path d="M68 500 A 232 232 0 0 1 532 500" stroke="#ffd23f"/>
+        <path d="M82 500 A 218 218 0 0 1 518 500" stroke="#5cd68a"/>
+        <path d="M96 500 A 204 204 0 0 1 504 500" stroke="#4fb8ff"/>
+        <path d="M110 500 A 190 190 0 0 1 490 500" stroke="#a06bff"/>
+      </g>
+      <!-- hills -->
+      <ellipse cx="180" cy="560" rx="420" ry="140" fill="#9fdf8f"/>
+      <ellipse cx="650" cy="580" rx="450" ry="160" fill="#7fce74"/>
+      <!-- castle -->
+      <g stroke="#d99ec9" stroke-width="4">
+        <rect x="320" y="240" width="220" height="180" fill="#ffe4f2" rx="6"/>
+        <rect x="290" y="200" width="70" height="220" fill="#ffd6ec" rx="6"/>
+        <rect x="500" y="200" width="70" height="220" fill="#ffd6ec" rx="6"/>
+        <rect x="400" y="180" width="70" height="240" fill="#fff0f8" rx="6"/>
+      </g>
+      <polygon points="290,200 325,140 360,200" fill="#b98fff" stroke="#9268d8" stroke-width="4"/>
+      <polygon points="500,200 535,140 570,200" fill="#b98fff" stroke="#9268d8" stroke-width="4"/>
+      <polygon points="400,180 435,110 470,180" fill="#a06bff" stroke="#9268d8" stroke-width="4"/>
+      <line x1="325" y1="140" x2="325" y2="108" stroke="#9268d8" stroke-width="4"/>
+      <polygon points="325,108 355,118 325,128" fill="#ff5fa8"/>
+      <line x1="535" y1="140" x2="535" y2="108" stroke="#9268d8" stroke-width="4"/>
+      <polygon points="535,108 565,118 535,128" fill="#ff5fa8"/>
+      <line x1="435" y1="110" x2="435" y2="74" stroke="#9268d8" stroke-width="4"/>
+      <polygon points="435,74 469,86 435,98" fill="#ffd23f"/>
+      <!-- gate & windows -->
+      <path d="M405 420 L405 350 A 30 30 0 0 1 465 350 L465 420 Z" fill="#9268d8"/>
+      <circle cx="325" cy="250" r="12" fill="#fff8fd" stroke="#d99ec9" stroke-width="3"/>
+      <circle cx="535" cy="250" r="12" fill="#fff8fd" stroke="#d99ec9" stroke-width="3"/>
+      <circle cx="435" cy="230" r="14" fill="#fff8fd" stroke="#d99ec9" stroke-width="3"/>
+    </svg>
+    <div id="sticker-layer" style="position:absolute;inset:0;"></div>
+  </div>
+  <div id="sticker-tray"></div>
+</div>
+
+<!-- ============ LETTER BUBBLES ============ -->
+<div class="screen" id="letters">
+  <button class="btn corner-btn home-btn" data-go="home">🏠</button>
+  <div class="game-title">🔤 Find the Letter!</div>
+  <div id="letter-target">M</div>
+  <div id="letter-name-row"></div>
+  <div id="letter-bubbles"></div>
+</div>
+
+<!-- ============ LEAH MODE ============ -->
+<div class="screen" id="leah">
+  <button class="btn corner-btn home-btn" data-go="home">🏠</button>
+  <div class="game-title">👶 Leah's Sparkle Party!</div>
+  <div id="leah-area"><div id="leah-hint">👆✨</div></div>
+</div>
+
+<script>
+'use strict';
+/* =====================================================
+   Myla's Magic Kingdom — a game for Myla (almost 5!)
+   and her little sister Leah (2).
+   Everything is offline-friendly: no images, no audio
+   files — art is emoji + SVG, sound is WebAudio synth.
+   ===================================================== */
+
+/* ---------------- sound engine ---------------- */
+let soundOn = localStorage.getItem('mk-sound') !== 'off';
+let AC = null;
+function ctx(){
+  if(!AC){ AC = new (window.AudioContext||window.webkitAudioContext)(); }
+  if(AC.state === 'suspended') AC.resume();
+  return AC;
+}
+function tone(freq, dur=0.18, type='sine', vol=0.18, delay=0){
+  if(!soundOn) return;
+  try{
+    const ac = ctx(), t = ac.currentTime + delay;
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.type = type; o.frequency.setValueAtTime(freq, t);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(ac.destination);
+    o.start(t); o.stop(t + dur + 0.05);
+  }catch(e){}
+}
+const PENTA = [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50, 1174.66, 1318.51];
+let noteStep = 0;
+function popNote(){ tone(PENTA[noteStep % PENTA.length], 0.2, 'triangle', 0.2); noteStep++; }
+function twinkleSound(){ [0,1,2].forEach(i => tone(PENTA[3+i], 0.15, 'sine', 0.12, i*0.07)); }
+function boing(){ tone(200, 0.25, 'sine', 0.15); tone(150, 0.3, 'sine', 0.1, 0.08); }
+function fanfare(){
+  [523.25, 659.25, 783.99, 1046.5, 1046.5].forEach((f,i)=> tone(f, 0.3, 'triangle', 0.2, i*0.16));
+  [261.6, 329.6, 392, 523.25, 523.25].forEach((f,i)=> tone(f, 0.3, 'sine', 0.12, i*0.16));
+}
+function chime(){ const f = PENTA[Math.floor(Math.random()*PENTA.length)]; tone(f, 0.4, 'sine', 0.16); tone(f*2, 0.3, 'sine', 0.06, 0.05); }
+
+/* speech — gentle spoken prompts so no reading is needed */
+let voice = null;
+function pickVoice(){
+  if(!('speechSynthesis' in window)) return;
+  const vs = speechSynthesis.getVoices().filter(v => v.lang && v.lang.startsWith('en'));
+  voice = vs.find(v => /karen|samantha|female|zira|catherine/i.test(v.name)) || vs[0] || null;
+}
+if('speechSynthesis' in window){
+  pickVoice();
+  speechSynthesis.onvoiceschanged = pickVoice;
+}
+function say(text, delay=0){
+  if(!soundOn || !('speechSynthesis' in window)) return;
+  setTimeout(()=>{
+    try{
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      if(voice) u.voice = voice;
+      u.rate = 0.92; u.pitch = 1.25;
+      speechSynthesis.speak(u);
+    }catch(e){}
+  }, delay);
+}
+
+const soundBtn = document.getElementById('sound-toggle');
+function renderSoundBtn(){ soundBtn.textContent = soundOn ? '🔊' : '🔇'; }
+renderSoundBtn();
+soundBtn.addEventListener('pointerdown', () => {
+  soundOn = !soundOn;
+  localStorage.setItem('mk-sound', soundOn ? 'on' : 'off');
+  if(!soundOn && 'speechSynthesis' in window) speechSynthesis.cancel();
+  renderSoundBtn();
+  if(soundOn) twinkleSound();
+});
+
+/* ---------------- particles & celebration ---------------- */
+function burst(x, y, container, emojis=['✨','⭐','💖','🌟'], count=10){
+  for(let i=0;i<count;i++){
+    const p = document.createElement('span');
+    p.className = 'particle';
+    p.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    const ang = Math.random()*Math.PI*2, dist = 8 + Math.random()*16;
+    p.style.setProperty('--dx', Math.cos(ang)*dist + 'vmin');
+    p.style.setProperty('--dy', Math.sin(ang)*dist + 'vmin');
+    p.style.left = x + 'px'; p.style.top = y + 'px';
+    container.appendChild(p);
+    setTimeout(()=>p.remove(), 950);
+  }
+}
+function banner(text){
+  const b = document.createElement('div');
+  b.className = 'celebrate-banner';
+  b.textContent = text;
+  document.body.appendChild(b);
+  setTimeout(()=>b.remove(), 2600);
+}
+function unicornFlyby(){
+  const u = document.createElement('div');
+  u.className = 'flyby';
+  u.textContent = '🌈🦄';
+  document.body.appendChild(u);
+  setTimeout(()=>u.remove(), 3300);
+}
+
+/* ---------------- ambient sky ---------------- */
+(function makeSky(){
+  for(let i=0;i<4;i++){
+    const c = document.createElement('div');
+    c.className = 'cloud'; c.textContent = '☁️';
+    c.style.top = (5 + Math.random()*45) + 'vh';
+    c.style.animationDuration = (55 + Math.random()*50) + 's';
+    c.style.animationDelay = (-Math.random()*60) + 's';
+    document.body.appendChild(c);
+  }
+  for(let i=0;i<10;i++){
+    const s = document.createElement('div');
+    s.className = 'twinkle'; s.textContent = '✦';
+    s.style.left = Math.random()*96 + 'vw';
+    s.style.top = Math.random()*92 + 'vh';
+    s.style.color = ['#ff8fc8','#ffd23f','#7fc4ff','#b98fff'][i%4];
+    s.style.animationDelay = (Math.random()*3) + 's';
+    document.body.appendChild(s);
+  }
+})();
+
+/* ---------------- screen switching ---------------- */
+let current = 'home';
+const enterHooks = {}, exitHooks = {};
+function go(id){
+  if(exitHooks[current]) exitHooks[current]();
+  document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === id));
+  current = id;
+  twinkleSound();
+  if(enterHooks[id]) enterHooks[id]();
+}
+document.querySelectorAll('[data-go]').forEach(el =>
+  el.addEventListener('pointerdown', e => { e.stopPropagation(); go(el.dataset.go); }));
+
+/* =====================================================
+   GAME 1 — STAR POP
+   ===================================================== */
+const popArea = document.getElementById('pop-area');
+const meter = document.getElementById('rainbow-meter');
+const RAINBOW = ['#ff5fa8','#ff9d5c','#ffd23f','#5cd68a','#4fb8ff','#a06bff','#ff8fc8'];
+let popProgress = 0, popTimer = null;
+RAINBOW.forEach(()=> {
+  const d = document.createElement('div');
+  d.className = 'meter-dot';
+  meter.appendChild(d);
+});
+function renderMeter(){
+  [...meter.children].forEach((d,i)=>{
+    const on = i < popProgress;
+    d.classList.toggle('filled', on);
+    d.style.background = on ? RAINBOW[i] : '';
+  });
+}
+function spawnFloater(){
+  if(popArea.querySelectorAll('.floater').length >= 8) return;
+  const f = document.createElement('div');
+  f.className = 'floater';
+  f.textContent = ['⭐','🌟','💖','🎈','🦋','🌸','👑','🍭'][Math.floor(Math.random()*8)];
+  f.style.left = (5 + Math.random()*82) + 'vw';
+  f.style.animationDuration = (7 + Math.random()*6) + 's';
+  f.addEventListener('animationend', ()=> f.remove());
+  f.addEventListener('pointerdown', e => {
+    e.stopPropagation();
+    const r = popArea.getBoundingClientRect();
+    burst(e.clientX - r.left, e.clientY - r.top, popArea);
+    popNote();
+    f.remove();
+    popProgress++;
+    if(popProgress >= RAINBOW.length){
+      popProgress = 0;
+      fanfare(); unicornFlyby(); banner('YAY!');
+      say('Hooray Myla! You made a rainbow!', 300);
+    }
+    renderMeter();
+  });
+  popArea.appendChild(f);
+}
+enterHooks.pop = () => {
+  popProgress = 0; noteStep = 0; renderMeter();
+  say('Pop the stars!');
+  spawnFloater(); spawnFloater();
+  popTimer = setInterval(spawnFloater, 900);
+};
+exitHooks.pop = () => {
+  clearInterval(popTimer);
+  popArea.querySelectorAll('.floater').forEach(f=>f.remove());
+};
+
+/* =====================================================
+   GAME 2 — UNICORN DRESS-UP
+   ===================================================== */
+const uniSvg = document.getElementById('unicorn-svg');
+const uniStage = document.getElementById('uni-stage');
+const MANES = {
+  pink:   ['#ff8fc8','#ffb3d9','#ff6fb8','#ffc9e5','#ff8fc8','#ffb3d9'],
+  purple: ['#b98fff','#d0b3ff','#a06bff','#e0ccff','#b98fff','#d0b3ff'],
+  blue:   ['#7fc4ff','#a8d8ff','#4fb8ff','#c9e7ff','#7fc4ff','#a8d8ff'],
+  mint:   ['#7fe8c0','#a8f0d5','#5cd68a','#c9f7e4','#7fe8c0','#a8f0d5'],
+  sunny:  ['#ffd66e','#ffe49c','#ffc23f','#ffedb0','#ffd66e','#ffe49c'],
+  rainbow:['#ff5fa8','#ff9d5c','#ffd23f','#5cd68a','#4fb8ff','#a06bff'],
+};
+function setMane(name){
+  const colors = MANES[name];
+  document.querySelectorAll('#unicorn-svg .mane').forEach((c,i)=>{
+    c.setAttribute('fill', colors[i % colors.length]);
+  });
+  document.querySelectorAll('.swatch').forEach(s =>
+    s.classList.toggle('selected', s.dataset.mane === name));
+}
+setMane('pink');
+document.querySelectorAll('.swatch').forEach(s =>
+  s.addEventListener('pointerdown', ()=>{ setMane(s.dataset.mane); twinkleSound(); }));
+
+const HATS = [null, 'hat-crown', 'hat-bow', 'hat-party'];
+let hatIdx = 0;
+document.getElementById('hat-btn').addEventListener('pointerdown', ()=>{
+  hatIdx = (hatIdx + 1) % HATS.length;
+  document.querySelectorAll('.hat').forEach(h => h.style.display = 'none');
+  if(HATS[hatIdx]) document.getElementById(HATS[hatIdx]).style.display = '';
+  popNote();
+});
+document.getElementById('wings-btn').addEventListener('pointerdown', ()=>{
+  const w = document.getElementById('uni-wings');
+  w.style.display = w.style.display === 'none' ? '' : 'none';
+  twinkleSound();
+});
+const BGS = ['', 'bg-rainbow', 'bg-night'];
+let bgIdx = 0;
+document.getElementById('bg-btn').addEventListener('pointerdown', ()=>{
+  bgIdx = (bgIdx + 1) % BGS.length;
+  uniStage.className = '';
+  uniStage.id = 'uni-stage';
+  if(BGS[bgIdx]) uniStage.classList.add(BGS[bgIdx]);
+  chime();
+});
+uniSvg.addEventListener('pointerdown', e=>{
+  uniSvg.classList.remove('bounce');
+  void uniSvg.offsetWidth;
+  uniSvg.classList.add('bounce');
+  const r = uniStage.getBoundingClientRect();
+  burst(e.clientX - r.left, e.clientY - r.top, uniStage, ['💖','✨','🌸']);
+  [0,2,4].forEach((n,i)=> tone(PENTA[n]*1.5, 0.18, 'triangle', 0.18, i*0.09));
+});
+enterHooks.uni = () => say('Dress up your unicorn!');
+
+/* =====================================================
+   GAME 3 — CASTLE STICKERS
+   ===================================================== */
+const STICKERS = ['🦄','👸','🧚','🌈','⭐','🌸','🦋','🐰','🎀','🐸','☁️','💖'];
+const trayEl = document.getElementById('sticker-tray');
+const stickerLayer = document.getElementById('sticker-layer');
+const castleScene = document.getElementById('castle-scene');
+let selectedSticker = '🦄';
+STICKERS.forEach((s,i)=>{
+  const b = document.createElement('button');
+  b.className = 'btn tray-sticker' + (i===0 ? ' selected' : '');
+  b.textContent = s;
+  b.addEventListener('pointerdown', e=>{
+    e.stopPropagation();
+    selectedSticker = s;
+    trayEl.querySelectorAll('.tray-sticker').forEach(t=>t.classList.remove('selected'));
+    b.classList.add('selected');
+    popNote();
+  });
+  trayEl.appendChild(b);
+});
+const broom = document.createElement('button');
+broom.className = 'btn tray-sticker';
+broom.textContent = '🧹';
+broom.title = 'clear stickers';
+broom.addEventListener('pointerdown', e=>{
+  e.stopPropagation();
+  stickerLayer.innerHTML = '';
+  boing();
+});
+trayEl.appendChild(broom);
+
+castleScene.addEventListener('pointerdown', e=>{
+  const r = castleScene.getBoundingClientRect();
+  const x = e.clientX - r.left, y = e.clientY - r.top;
+  const st = document.createElement('span');
+  st.className = 'sticker';
+  st.textContent = selectedSticker;
+  st.style.left = x + 'px'; st.style.top = y + 'px';
+  st.style.setProperty('--rot', (Math.random()*24 - 12) + 'deg');
+  stickerLayer.appendChild(st);
+  burst(x, y, castleScene, ['✨'], 5);
+  popNote();
+});
+enterHooks.castle = () => say('Pick a sticker, then tap the castle!');
+
+/* =====================================================
+   GAME 4 — LETTER BUBBLES
+   Letters of MYLA, then LEAH, then friendly favourites.
+   ===================================================== */
+const targetEl = document.getElementById('letter-target');
+const bubblesEl = document.getElementById('letter-bubbles');
+const nameRow = document.getElementById('letter-name-row');
+const BUBBLE_COLORS = ['#ff8fc8','#b98fff','#7fc4ff','#5cd68a'];
+const ROUNDS = [
+  { word:'MYLA', cheer:'Myla! That spells your name! Hooray!' },
+  { word:'LEAH', cheer:'Leah! That spells your little sister\'s name!' },
+  { word:'STAR', cheer:'Star! You are a superstar!' },
+  { word:'PONY', cheer:'Pony! Amazing work!' },
+];
+const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+let roundIdx = 0, letterIdx = 0;
+
+function renderNameRow(){
+  nameRow.innerHTML = '';
+  ROUNDS[roundIdx].word.split('').forEach((ch,i)=>{
+    const s = document.createElement('span');
+    s.textContent = ch;
+    if(i < letterIdx) s.classList.add('won');
+    nameRow.appendChild(s);
+  });
+}
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function newLetterRound(){
+  const word = ROUNDS[roundIdx].word;
+  const target = word[letterIdx];
+  targetEl.textContent = target;
+  renderNameRow();
+  const distractors = shuffle(ALPHABET.split('').filter(c => c !== target)).slice(0,3);
+  const options = shuffle([target, ...distractors]);
+  bubblesEl.innerHTML = '';
+  options.forEach((ch,i)=>{
+    const b = document.createElement('button');
+    b.className = 'btn bubble';
+    b.textContent = ch;
+    b.style.background = BUBBLE_COLORS[i];
+    b.addEventListener('pointerdown', e=>{
+      e.stopPropagation();
+      if(ch === target){
+        const r = bubblesEl.getBoundingClientRect();
+        burst(e.clientX - r.left, e.clientY - r.top, bubblesEl, ['⭐','✨','💖']);
+        twinkleSound();
+        say('Yes! ' + target + '!');
+        letterIdx++;
+        if(letterIdx >= word.length){
+          fanfare(); unicornFlyby(); banner(word + '!');
+          say(ROUNDS[roundIdx].cheer, 600);
+          roundIdx = (roundIdx + 1) % ROUNDS.length;
+          letterIdx = 0;
+          setTimeout(newLetterRound, 3000);
+        } else {
+          setTimeout(newLetterRound, 1200);
+        }
+      } else {
+        b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong');
+        boing();
+        say('Almost! Find the ' + target + '!');
+      }
+    });
+    bubblesEl.appendChild(b);
+  });
+  say('Can you find the letter ' + target + '?', 300);
+}
+targetEl.addEventListener('pointerdown', ()=> say('Find the letter ' + targetEl.textContent + '!'));
+enterHooks.letters = () => { roundIdx = 0; letterIdx = 0; newLetterRound(); };
+exitHooks.letters = () => { if('speechSynthesis' in window) speechSynthesis.cancel(); };
+
+/* =====================================================
+   GAME 5 — LEAH'S SPARKLE PARTY (age 2 mode)
+   Any tap = fireworks. No wrong answers, no goals.
+   ===================================================== */
+const leahArea = document.getElementById('leah-area');
+const leahHint = document.getElementById('leah-hint');
+const FRIENDS = ['🦄','🐰','🐥','🐸','🦋','🐻','🐱','⭐'];
+let leahTaps = 0;
+leahArea.addEventListener('pointerdown', e=>{
+  leahHint.style.display = 'none';
+  const r = leahArea.getBoundingClientRect();
+  const x = e.clientX - r.left, y = e.clientY - r.top;
+  burst(x, y, leahArea, ['✨','⭐','💖','🌈','🌟','🦋'], 14);
+  chime();
+  leahTaps++;
+  if(leahTaps % 4 === 0){
+    const f = document.createElement('div');
+    f.className = 'friend';
+    f.textContent = FRIENDS[Math.floor(Math.random()*FRIENDS.length)];
+    f.style.left = x + 'px'; f.style.top = y + 'px';
+    leahArea.appendChild(f);
+    setTimeout(()=>f.remove(), 1650);
+    [0,3,5].forEach((n,i)=> tone(PENTA[n], 0.2, 'triangle', 0.15, i*0.1));
+  }
+});
+enterHooks.leah = () => { leahHint.style.display = ''; leahTaps = 0; say('Tap tap tap, Leah!'); };
+
+/* first-gesture audio unlock */
+document.body.addEventListener('pointerdown', ()=>{ if(soundOn) ctx(); }, {once:true});
+</script>
+</body>
+</html>
