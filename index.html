@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Myla's Magic Kingdom 🦄</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&display=swap" rel="stylesheet">
 <style>
   :root{
     --sky1:#cdb4f7; --sky2:#ffc6e7; --sky3:#fff1c9;
@@ -53,7 +51,7 @@
   .sound-btn{right:12px;background:var(--candy-mint);}
 
   /* ---------- HOME ---------- */
-  #home{justify-content:center;gap:2vmin;}
+  #home{justify-content:flex-start;gap:2vmin;overflow-y:auto;padding:5vmin 3vmin 4vmin;}
   .title{
     font-size:9.5vmin;font-weight:800;text-align:center;line-height:1.05;margin-top:1vmin;
     background:linear-gradient(90deg,#ff5fa8,#ff9d5c,#ffd23f,#5cd68a,#4fb8ff,#a06bff);
@@ -63,9 +61,10 @@
   }
   @keyframes titleBob{0%,100%{transform:rotate(-1.5deg)}50%{transform:rotate(1.5deg) translateY(-6px)}}
   .subtitle{font-size:4vmin;opacity:.75;margin-bottom:1vmin;}
-  .menu{display:flex;flex-wrap:wrap;justify-content:center;gap:3vmin;max-width:92vw;}
+  .menu{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));justify-content:center;
+    gap:2.2vmin;width:min(96vw,1050px);padding:1vmin 0 4vmin;}
   .card{
-    width:34vmin;height:30vmin;min-width:150px;min-height:130px;
+    width:100%;height:clamp(125px,25vmin,230px);min-width:0;
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5vmin;
     animation:cardFloat 3.4s ease-in-out infinite;
   }
@@ -79,6 +78,8 @@
   .card.c-castle{background:#dff0ff;}
   .card.c-letters{background:#e0f9ee;}
   .card.c-leah{background:#fff3d1;}
+  .card.c-count{background:#fff0dc;}
+  .card.c-memory{background:#e8e4ff;}
 
   /* ---------- generic game header ---------- */
   .game-title{margin-top:2.5vmin;font-size:5.5vmin;font-weight:800;
@@ -217,6 +218,50 @@
     100%{transform:translate(-50%,-50%) scale(0);opacity:0}
   }
 
+  /* ---------- COUNTING GARDEN ---------- */
+  #count-prompt{display:flex;align-items:center;justify-content:center;gap:2vmin;margin:1vmin 0;
+    min-height:13vmin;font-size:7vmin;font-weight:800;}
+  #count-number{width:12vmin;height:12vmin;min-width:62px;min-height:62px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;background:var(--white);
+    border:5px dashed var(--candy-peach);box-shadow:var(--shadow);color:#f06c8d;}
+  #count-progress{display:flex;gap:1vmin;min-width:32vmin;justify-content:center;}
+  .count-pip{font-size:5.5vmin;filter:grayscale(1);opacity:.28;transition:.2s ease;}
+  .count-pip.done{filter:none;opacity:1;transform:scale(1.2);}
+  #count-garden{position:relative;flex:1;width:min(95vw,1000px);margin:0 0 2vmin;
+    border:6px solid var(--white);border-radius:36px;box-shadow:var(--shadow);overflow:hidden;
+    background:linear-gradient(#bfe7ff 0 58%,#b9ecb4 58% 78%,#83d67b 78%);}
+  #count-garden::before{content:'☁️\00a0\00a0\00a0☀️';position:absolute;inset:4% 6% auto;
+    font-size:9vmin;letter-spacing:12vmin;opacity:.85;pointer-events:none;}
+  .count-item{position:absolute;width:17vmin;height:17vmin;min-width:78px;min-height:78px;
+    display:flex;align-items:center;justify-content:center;font-size:11vmin;line-height:1;
+    border:0;background:transparent;cursor:pointer;filter:drop-shadow(0 5px 2px rgba(90,61,122,.18));
+    animation:countBob 2.2s ease-in-out infinite;}
+  @keyframes countBob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-1.8vmin) rotate(4deg)}}
+  .count-item.collected{animation:collectItem .45s ease forwards;pointer-events:none;}
+  @keyframes collectItem{to{transform:translateY(-6vmin) scale(0) rotate(20deg);opacity:0}}
+
+  /* ---------- MEMORY MEADOW ---------- */
+  #memory-status{display:flex;align-items:center;justify-content:center;gap:1.2vmin;
+    min-height:9vmin;font-size:5vmin;font-weight:800;margin:.8vmin 0;}
+  .memory-star{opacity:.25;filter:grayscale(1);transition:.25s ease;}
+  .memory-star.won{opacity:1;filter:none;transform:scale(1.18);}
+  #memory-grid{position:relative;flex:1;width:min(92vw,760px);display:grid;grid-template-columns:repeat(4,1fr);
+    grid-template-rows:repeat(2,minmax(105px,1fr));gap:2vmin;min-height:0;margin:0 0 3vmin;}
+  .memory-card{position:relative;border:0;border-radius:28px;background:transparent;
+    cursor:pointer;perspective:700px;min-width:0;min-height:0;font-family:var(--font);}
+  .memory-card-inner{position:absolute;inset:0;perspective:700px;}
+  .memory-face{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    border:5px solid var(--white);border-radius:28px;box-shadow:0 7px 0 rgba(90,61,122,.16);
+    backface-visibility:hidden;-webkit-backface-visibility:hidden;
+    transition:transform .42s cubic-bezier(.2,.75,.25,1);}
+  .memory-back{background:linear-gradient(145deg,#b98fff,#7fc4ff);font-size:9vmin;color:white;
+    transform:rotateY(0);}
+  .memory-front{background:var(--white);font-size:10vmin;transform:rotateY(-180deg);}
+  .memory-card.open .memory-back,.memory-card.matched .memory-back{transform:rotateY(180deg);}
+  .memory-card.open .memory-front,.memory-card.matched .memory-front{transform:rotateY(0);}
+  .memory-card.matched .memory-front{background:#fff3b7;animation:matchedGlow .7s ease;}
+  @keyframes matchedGlow{50%{transform:rotateY(0) scale(1.08)}}
+
   .celebrate-banner{position:fixed;top:38vh;left:0;right:0;text-align:center;z-index:95;
     font-size:12vmin;font-weight:800;pointer-events:none;
     background:linear-gradient(90deg,#ff5fa8,#ffd23f,#4fb8ff,#a06bff);
@@ -224,6 +269,29 @@
     filter:drop-shadow(0 3px 0 #fff);animation:bannerIn 2.6s ease forwards;}
   @keyframes bannerIn{0%{transform:scale(0)}20%{transform:scale(1.15)}30%{transform:scale(1)}
     80%{transform:scale(1);opacity:1}100%{transform:scale(1.4);opacity:0}}
+
+  @media (max-width:760px){
+    #home{padding-top:72px;}
+    .menu{grid-template-columns:repeat(2,minmax(125px,1fr));gap:14px;}
+    .card{height:132px;animation:none;}
+    .card .big{font-size:58px}.card .label{font-size:18px}
+    .title{font-size:clamp(42px,11vmin,68px)}.subtitle{font-size:clamp(18px,4.5vmin,28px)}
+    #memory-grid{grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(4,minmax(82px,1fr));}
+    .memory-front{font-size:12vmin}.memory-back{font-size:10vmin}
+  }
+  @media (max-height:600px) and (orientation:landscape){
+    #home{padding-top:2vmin}.title{font-size:8vmin}.subtitle{display:none}
+    .menu{grid-template-columns:repeat(4,1fr);gap:1.5vmin}.card{height:30vmin;min-height:100px}
+    .card .big{font-size:12vmin}.card .label{font-size:3.3vmin}
+    .game-title{font-size:4.5vmin}.corner-btn{top:6px}
+    #memory-grid{grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(2,1fr);}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .cloud,.twinkle,.title,.card,.bubble,.count-item{animation:none!important;}
+    .particle,.flyby,.friend,.celebrate-banner,.sticker,#unicorn-svg.bounce{
+      animation-duration:.01ms!important;animation-iteration-count:1!important;}
+    .memory-face,.swatch,.meter-dot{transition-duration:.01ms!important;}
+  }
 </style>
 </head>
 <body>
@@ -240,6 +308,8 @@
     <button class="btn card c-uni" data-go="uni"><span class="big">🦄</span><span class="label">Dress-Up</span></button>
     <button class="btn card c-castle" data-go="castle"><span class="big">🏰</span><span class="label">Stickers</span></button>
     <button class="btn card c-letters" data-go="letters"><span class="big">🔤</span><span class="label">Letters</span></button>
+    <button class="btn card c-count" data-go="count"><span class="big">🦋</span><span class="label">Counting</span></button>
+    <button class="btn card c-memory" data-go="memory"><span class="big">🎴</span><span class="label">Matching</span></button>
     <button class="btn card c-leah" data-go="leah"><span class="big">👶</span><span class="label">Leah's Sparkles</span></button>
   </div>
 </div>
@@ -400,6 +470,25 @@
   <div id="letter-bubbles"></div>
 </div>
 
+<!-- ============ COUNTING GARDEN ============ -->
+<div class="screen" id="count">
+  <button class="btn corner-btn home-btn" data-go="home" aria-label="go home">🏠</button>
+  <div class="game-title">🦋 Counting Garden!</div>
+  <div id="count-prompt">
+    <div id="count-number">1</div>
+    <div id="count-progress" aria-live="polite"></div>
+  </div>
+  <div id="count-garden"></div>
+</div>
+
+<!-- ============ MEMORY PAIRS ============ -->
+<div class="screen" id="memory">
+  <button class="btn corner-btn home-btn" data-go="home" aria-label="go home">🏠</button>
+  <div class="game-title">🎴 Magic Matching!</div>
+  <div id="memory-status" aria-live="polite"></div>
+  <div id="memory-grid"></div>
+</div>
+
 <!-- ============ LEAH MODE ============ -->
 <div class="screen" id="leah">
   <button class="btn corner-btn home-btn" data-go="home">🏠</button>
@@ -417,7 +506,19 @@
    ===================================================== */
 
 /* ---------------- sound engine ---------------- */
-let soundOn = localStorage.getItem('mk-sound') !== 'off';
+function storeGet(key, fallback=null){
+  try{ const value = localStorage.getItem(key); return value === null ? fallback : value; }
+  catch(e){ return fallback; }
+}
+function storeSet(key, value){
+  try{ localStorage.setItem(key, value); }
+  catch(e){}
+}
+function readJSON(key, fallback){
+  try{ return JSON.parse(storeGet(key, '')) || fallback; }
+  catch(e){ return fallback; }
+}
+let soundOn = storeGet('mk-sound') !== 'off';
 let AC = null;
 function ctx(){
   if(!AC){ AC = new (window.AudioContext||window.webkitAudioContext)(); }
@@ -450,6 +551,7 @@ function chime(){ const f = PENTA[Math.floor(Math.random()*PENTA.length)]; tone(
 
 /* speech — gentle spoken prompts so no reading is needed */
 let voice = null;
+const speechTimers = new Set();
 function pickVoice(){
   if(!('speechSynthesis' in window)) return;
   const vs = speechSynthesis.getVoices().filter(v => v.lang && v.lang.startsWith('en'));
@@ -461,7 +563,8 @@ if('speechSynthesis' in window){
 }
 function say(text, delay=0){
   if(!soundOn || !('speechSynthesis' in window)) return;
-  setTimeout(()=>{
+  const timer = setTimeout(()=>{
+    speechTimers.delete(timer);
     try{
       speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(text);
@@ -470,15 +573,24 @@ function say(text, delay=0){
       speechSynthesis.speak(u);
     }catch(e){}
   }, delay);
+  speechTimers.add(timer);
+}
+function stopSpeech(){
+  speechTimers.forEach(clearTimeout);
+  speechTimers.clear();
+  if('speechSynthesis' in window) speechSynthesis.cancel();
 }
 
 const soundBtn = document.getElementById('sound-toggle');
-function renderSoundBtn(){ soundBtn.textContent = soundOn ? '🔊' : '🔇'; }
+function renderSoundBtn(){
+  soundBtn.textContent = soundOn ? '🔊' : '🔇';
+  soundBtn.setAttribute('aria-pressed', String(soundOn));
+}
 renderSoundBtn();
 soundBtn.addEventListener('pointerdown', () => {
   soundOn = !soundOn;
-  localStorage.setItem('mk-sound', soundOn ? 'on' : 'off');
-  if(!soundOn && 'speechSynthesis' in window) speechSynthesis.cancel();
+  storeSet('mk-sound', soundOn ? 'on' : 'off');
+  if(!soundOn) stopSpeech();
   renderSoundBtn();
   if(soundOn) twinkleSound();
 });
@@ -537,6 +649,7 @@ function unicornFlyby(){
 let current = 'home';
 const enterHooks = {}, exitHooks = {};
 function go(id){
+  stopSpeech();
   if(exitHooks[current]) exitHooks[current]();
   document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === id));
   current = id;
@@ -545,6 +658,9 @@ function go(id){
 }
 document.querySelectorAll('[data-go]').forEach(el =>
   el.addEventListener('pointerdown', e => { e.stopPropagation(); go(el.dataset.go); }));
+document.querySelectorAll('[data-go="home"]').forEach(el => el.setAttribute('aria-label','go home'));
+document.querySelectorAll('.card[data-go]').forEach(el =>
+  el.setAttribute('aria-label', 'play ' + el.querySelector('.label').textContent));
 
 /* =====================================================
    GAME 1 — STAR POP
@@ -613,15 +729,21 @@ const MANES = {
   sunny:  ['#ffd66e','#ffe49c','#ffc23f','#ffedb0','#ffd66e','#ffe49c'],
   rainbow:['#ff5fa8','#ff9d5c','#ffd23f','#5cd68a','#4fb8ff','#a06bff'],
 };
-function setMane(name){
+let maneName = 'pink';
+function saveDress(){
+  storeSet('mk-dress', JSON.stringify({mane:maneName,hat:hatIdx,wings:wingsOn,bg:bgIdx}));
+}
+function setMane(name, save=true){
+  if(!MANES[name]) name = 'pink';
+  maneName = name;
   const colors = MANES[name];
   document.querySelectorAll('#unicorn-svg .mane').forEach((c,i)=>{
     c.setAttribute('fill', colors[i % colors.length]);
   });
   document.querySelectorAll('.swatch').forEach(s =>
     s.classList.toggle('selected', s.dataset.mane === name));
+  if(save) saveDress();
 }
-setMane('pink');
 document.querySelectorAll('.swatch').forEach(s =>
   s.addEventListener('pointerdown', ()=>{ setMane(s.dataset.mane); twinkleSound(); }));
 
@@ -631,12 +753,14 @@ document.getElementById('hat-btn').addEventListener('pointerdown', ()=>{
   hatIdx = (hatIdx + 1) % HATS.length;
   document.querySelectorAll('.hat').forEach(h => h.style.display = 'none');
   if(HATS[hatIdx]) document.getElementById(HATS[hatIdx]).style.display = '';
-  popNote();
+  popNote(); saveDress();
 });
+let wingsOn = false;
 document.getElementById('wings-btn').addEventListener('pointerdown', ()=>{
   const w = document.getElementById('uni-wings');
-  w.style.display = w.style.display === 'none' ? '' : 'none';
-  twinkleSound();
+  wingsOn = !wingsOn;
+  w.style.display = wingsOn ? '' : 'none';
+  twinkleSound(); saveDress();
 });
 const BGS = ['', 'bg-rainbow', 'bg-night'];
 let bgIdx = 0;
@@ -645,7 +769,7 @@ document.getElementById('bg-btn').addEventListener('pointerdown', ()=>{
   uniStage.className = '';
   uniStage.id = 'uni-stage';
   if(BGS[bgIdx]) uniStage.classList.add(BGS[bgIdx]);
-  chime();
+  chime(); saveDress();
 });
 uniSvg.addEventListener('pointerdown', e=>{
   uniSvg.classList.remove('bounce');
@@ -655,6 +779,16 @@ uniSvg.addEventListener('pointerdown', e=>{
   burst(e.clientX - r.left, e.clientY - r.top, uniStage, ['💖','✨','🌸']);
   [0,2,4].forEach((n,i)=> tone(PENTA[n]*1.5, 0.18, 'triangle', 0.18, i*0.09));
 });
+const savedDress = readJSON('mk-dress', {});
+maneName = MANES[savedDress.mane] ? savedDress.mane : 'pink';
+hatIdx = Number.isInteger(savedDress.hat) ? Math.max(0, Math.min(HATS.length-1, savedDress.hat)) : 0;
+wingsOn = savedDress.wings === true;
+bgIdx = Number.isInteger(savedDress.bg) ? Math.max(0, Math.min(BGS.length-1, savedDress.bg)) : 0;
+setMane(maneName, false);
+document.querySelectorAll('.hat').forEach(h => h.style.display = 'none');
+if(HATS[hatIdx]) document.getElementById(HATS[hatIdx]).style.display = '';
+document.getElementById('uni-wings').style.display = wingsOn ? '' : 'none';
+if(BGS[bgIdx]) uniStage.classList.add(BGS[bgIdx]);
 enterHooks.uni = () => say('Dress up your unicorn!');
 
 /* =====================================================
@@ -665,6 +799,20 @@ const trayEl = document.getElementById('sticker-tray');
 const stickerLayer = document.getElementById('sticker-layer');
 const castleScene = document.getElementById('castle-scene');
 let selectedSticker = '🦄';
+let placedStickers = readJSON('mk-stickers', []);
+if(!Array.isArray(placedStickers)) placedStickers = [];
+placedStickers = placedStickers.filter(item => item && STICKERS.includes(item.emoji) &&
+  Number.isFinite(item.x) && Number.isFinite(item.y) && Number.isFinite(item.rot)).slice(-40);
+function saveStickers(){ storeSet('mk-stickers', JSON.stringify(placedStickers)); }
+function drawSticker(item, animate=true){
+  const st = document.createElement('span');
+  st.className = 'sticker';
+  st.textContent = item.emoji;
+  st.style.left = item.x + '%'; st.style.top = item.y + '%';
+  st.style.setProperty('--rot', item.rot + 'deg');
+  if(!animate){ st.style.animation = 'none'; st.style.transform = `translate(-50%,-50%) scale(1) rotate(${item.rot}deg)`; }
+  stickerLayer.appendChild(st);
+}
 STICKERS.forEach((s,i)=>{
   const b = document.createElement('button');
   b.className = 'btn tray-sticker' + (i===0 ? ' selected' : '');
@@ -682,25 +830,40 @@ const broom = document.createElement('button');
 broom.className = 'btn tray-sticker';
 broom.textContent = '🧹';
 broom.title = 'clear stickers';
+broom.setAttribute('aria-label','clear all stickers');
 broom.addEventListener('pointerdown', e=>{
   e.stopPropagation();
   stickerLayer.innerHTML = '';
+  placedStickers = [];
+  saveStickers();
   boing();
 });
 trayEl.appendChild(broom);
+const undoSticker = document.createElement('button');
+undoSticker.className = 'btn tray-sticker';
+undoSticker.textContent = '↩️';
+undoSticker.title = 'undo last sticker';
+undoSticker.setAttribute('aria-label','undo last sticker');
+undoSticker.addEventListener('pointerdown', e=>{
+  e.stopPropagation();
+  if(!placedStickers.length){ boing(); return; }
+  placedStickers.pop();
+  stickerLayer.lastElementChild?.remove();
+  saveStickers(); chime();
+});
+trayEl.appendChild(undoSticker);
 
 castleScene.addEventListener('pointerdown', e=>{
   const r = castleScene.getBoundingClientRect();
   const x = e.clientX - r.left, y = e.clientY - r.top;
-  const st = document.createElement('span');
-  st.className = 'sticker';
-  st.textContent = selectedSticker;
-  st.style.left = x + 'px'; st.style.top = y + 'px';
-  st.style.setProperty('--rot', (Math.random()*24 - 12) + 'deg');
-  stickerLayer.appendChild(st);
+  const item = {emoji:selectedSticker,x:x/r.width*100,y:y/r.height*100,rot:Math.random()*24-12};
+  placedStickers.push(item);
+  if(placedStickers.length > 40){ placedStickers.shift(); stickerLayer.firstElementChild?.remove(); }
+  drawSticker(item); saveStickers();
   burst(x, y, castleScene, ['✨'], 5);
   popNote();
 });
+placedStickers.forEach(item=>drawSticker(item, false));
 enterHooks.castle = () => say('Pick a sticker, then tap the castle!');
 
 /* =====================================================
@@ -718,7 +881,7 @@ const ROUNDS = [
   { word:'PONY', cheer:'Pony! Amazing work!' },
 ];
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-let roundIdx = 0, letterIdx = 0;
+let roundIdx = 0, letterIdx = 0, letterTimer = null, letterLocked = false;
 
 function renderNameRow(){
   nameRow.innerHTML = '';
@@ -731,6 +894,7 @@ function renderNameRow(){
 }
 function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 function newLetterRound(){
+  letterLocked = false;
   const word = ROUNDS[roundIdx].word;
   const target = word[letterIdx];
   targetEl.textContent = target;
@@ -745,7 +909,9 @@ function newLetterRound(){
     b.style.background = BUBBLE_COLORS[i];
     b.addEventListener('pointerdown', e=>{
       e.stopPropagation();
+      if(letterLocked) return;
       if(ch === target){
+        letterLocked = true;
         const r = bubblesEl.getBoundingClientRect();
         burst(e.clientX - r.left, e.clientY - r.top, bubblesEl, ['⭐','✨','💖']);
         twinkleSound();
@@ -756,9 +922,9 @@ function newLetterRound(){
           say(ROUNDS[roundIdx].cheer, 600);
           roundIdx = (roundIdx + 1) % ROUNDS.length;
           letterIdx = 0;
-          setTimeout(newLetterRound, 3000);
+          letterTimer = setTimeout(newLetterRound, 3000);
         } else {
-          setTimeout(newLetterRound, 1200);
+          letterTimer = setTimeout(newLetterRound, 1200);
         }
       } else {
         b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong');
@@ -772,10 +938,143 @@ function newLetterRound(){
 }
 targetEl.addEventListener('pointerdown', ()=> say('Find the letter ' + targetEl.textContent + '!'));
 enterHooks.letters = () => { roundIdx = 0; letterIdx = 0; newLetterRound(); };
-exitHooks.letters = () => { if('speechSynthesis' in window) speechSynthesis.cancel(); };
+exitHooks.letters = () => { clearTimeout(letterTimer); letterLocked = true; };
 
 /* =====================================================
-   GAME 5 — LEAH'S SPARKLE PARTY (age 2 mode)
+   GAME 5 — COUNTING GARDEN
+   Tap each friend; the game counts aloud up to five.
+   ===================================================== */
+const countNumber = document.getElementById('count-number');
+const countProgress = document.getElementById('count-progress');
+const countGarden = document.getElementById('count-garden');
+const COUNT_FRIENDS = [
+  {emoji:'🦋',one:'butterfly',many:'butterflies'}, {emoji:'🐞',one:'ladybug',many:'ladybugs'},
+  {emoji:'🌸',one:'flower',many:'flowers'}, {emoji:'⭐',one:'star',many:'stars'},
+  {emoji:'🐝',one:'bee',many:'bees'}
+];
+const COUNT_SPOTS = [
+  [11,28],[40,22],[70,29],[21,55],[52,49],[79,57],[10,76],[39,73],[68,77]
+];
+let countRound = 0, countTarget = 1, countDone = 0, countLocked = false, countTimer = null;
+function renderCountProgress(){
+  countProgress.innerHTML = '';
+  countProgress.setAttribute('aria-label', countDone + ' of ' + countTarget);
+  for(let i=0;i<countTarget;i++){
+    const pip = document.createElement('span');
+    pip.className = 'count-pip' + (i < countDone ? ' done' : '');
+    pip.textContent = '⭐';
+    countProgress.appendChild(pip);
+  }
+}
+function newCountRound(){
+  countGarden.innerHTML = '';
+  countDone = 0; countLocked = false;
+  countTarget = countRound < 5 ? countRound + 1 : 2 + Math.floor(Math.random()*4);
+  const friend = COUNT_FRIENDS[countRound % COUNT_FRIENDS.length];
+  const friendName = countTarget === 1 ? friend.one : friend.many;
+  countRound++;
+  countNumber.textContent = countTarget;
+  renderCountProgress();
+  shuffle([...COUNT_SPOTS]).slice(0,countTarget).forEach((spot,i)=>{
+    const item = document.createElement('button');
+    item.className = 'count-item';
+    item.textContent = friend.emoji;
+    item.style.left = spot[0] + '%'; item.style.top = spot[1] + '%';
+    item.style.animationDelay = (i*.22) + 's';
+    item.setAttribute('aria-label', friend.one);
+    item.addEventListener('pointerdown', e=>{
+      e.stopPropagation();
+      if(countLocked || item.classList.contains('collected')) return;
+      item.classList.add('collected');
+      countDone++;
+      renderCountProgress(); popNote();
+      const r = countGarden.getBoundingClientRect();
+      burst(e.clientX-r.left,e.clientY-r.top,countGarden,['✨','⭐'],7);
+      say(String(countDone));
+      if(countDone === countTarget){
+        countLocked = true;
+        fanfare(); banner(countTarget + '!');
+        say('You counted ' + countTarget + ' ' + friendName + '! Wonderful!', 500);
+        countTimer = setTimeout(newCountRound, 2700);
+      }
+    });
+    countGarden.appendChild(item);
+  });
+  say('Can you count ' + countTarget + ' ' + friendName + '?', 250);
+}
+enterHooks.count = () => { countRound = 0; newCountRound(); };
+exitHooks.count = () => { clearTimeout(countTimer); countLocked = true; countGarden.innerHTML = ''; };
+
+/* =====================================================
+   GAME 6 — MAGIC MATCHING
+   Four friendly pairs; misses simply turn back over.
+   ===================================================== */
+const memoryGrid = document.getElementById('memory-grid');
+const memoryStatus = document.getElementById('memory-status');
+const MEMORY_PICTURES = ['🦄','👑','🌈','🦋','🐰','🌸','⭐','🐸','🧚','🎀'];
+let memoryOpen = [], memoryMatches = 0, memoryLocked = false, memoryTimer = null;
+function renderMemoryStatus(){
+  memoryStatus.innerHTML = '<span>✨</span>';
+  for(let i=0;i<4;i++){
+    const star = document.createElement('span');
+    star.className = 'memory-star' + (i < memoryMatches ? ' won' : '');
+    star.textContent = '⭐';
+    memoryStatus.appendChild(star);
+  }
+  const end = document.createElement('span'); end.textContent = '✨'; memoryStatus.appendChild(end);
+}
+function newMemoryRound(){
+  memoryGrid.innerHTML = '';
+  memoryOpen = []; memoryMatches = 0; memoryLocked = false;
+  renderMemoryStatus();
+  const pictures = shuffle([...MEMORY_PICTURES]).slice(0,4);
+  shuffle([...pictures,...pictures]).forEach(picture=>{
+    const card = document.createElement('button');
+    card.className = 'memory-card';
+    card.dataset.picture = picture;
+    card.setAttribute('aria-label','hidden matching card');
+    card.innerHTML = '<span class="memory-card-inner"><span class="memory-face memory-back">?</span><span class="memory-face memory-front"></span></span>';
+    card.querySelector('.memory-front').textContent = picture;
+    card.addEventListener('pointerdown', e=>{
+      e.stopPropagation();
+      if(memoryLocked || card.classList.contains('open') || card.classList.contains('matched')) return;
+      card.classList.add('open');
+      card.setAttribute('aria-label',picture);
+      memoryOpen.push(card); popNote();
+      if(memoryOpen.length < 2) return;
+      memoryLocked = true;
+      const [first,second] = memoryOpen;
+      if(first.dataset.picture === second.dataset.picture){
+        first.classList.add('matched'); second.classList.add('matched');
+        first.classList.remove('open'); second.classList.remove('open');
+        memoryOpen = []; memoryLocked = false; memoryMatches++;
+        renderMemoryStatus(); twinkleSound(); say('A match!');
+        const r = memoryGrid.getBoundingClientRect();
+        burst(e.clientX-r.left,e.clientY-r.top,memoryGrid,['⭐','💖','✨'],10);
+        if(memoryMatches === 4){
+          memoryLocked = true; fanfare(); unicornFlyby(); banner('MATCH!');
+          say('You found every matching pair! Amazing!', 500);
+          memoryTimer = setTimeout(newMemoryRound, 3000);
+        }
+      }else{
+        say('Nearly! Try another pair.'); boing();
+        memoryTimer = setTimeout(()=>{
+          first.classList.remove('open'); second.classList.remove('open');
+          first.setAttribute('aria-label','hidden matching card');
+          second.setAttribute('aria-label','hidden matching card');
+          memoryOpen = []; memoryLocked = false;
+        },850);
+      }
+    });
+    memoryGrid.appendChild(card);
+  });
+  say('Can you find the matching pictures?');
+}
+enterHooks.memory = newMemoryRound;
+exitHooks.memory = () => { clearTimeout(memoryTimer); memoryLocked = true; memoryOpen = []; };
+
+/* =====================================================
+   GAME 7 — LEAH'S SPARKLE PARTY (age 2 mode)
    Any tap = fireworks. No wrong answers, no goals.
    ===================================================== */
 const leahArea = document.getElementById('leah-area');

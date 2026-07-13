@@ -5,7 +5,10 @@ princesses and castles — plus a special sparkle mode for little sister Leah (2
 
 ## How to play
 
-**Just double-click `index.html`** — it opens in any browser. No internet needed.
+**Play online from any computer or tablet:**
+**https://srepho.github.io/myla-game/**
+
+Or **just double-click `index.html`** — it opens in any browser. No internet needed.
 
 Best experience:
 - On an **iPad/tablet**: open the file in Safari/Chrome, then use fullscreen so
@@ -25,6 +28,10 @@ Best experience:
 - 🔤 **Letter Bubbles** — gentle letter recognition: the game says a letter out
   loud and Myla finds it. It spells M-Y-L-A first, then L-E-A-H. Wrong taps just
   wobble — there's no way to lose.
+- 🦋 **Counting Garden** — count 1–5 butterflies, flowers and other garden
+  friends. Each tap counts aloud, with a celebration after the last one.
+- 🎴 **Magic Matching** — find four pairs of friendly pictures. Cards simply
+  turn back over when they do not match, so there is no fail state.
 - 👶 **Leah's Sparkle Party** — for the 2-year-old: tapping anywhere makes
   fireworks and chimes, and friendly animals pop up. No wrong answers.
 
@@ -32,5 +39,7 @@ Best experience:
 
 - No ads, no links, no network calls at play time, nothing to install.
 - The 🔊/🔇 button mutes everything (including the voice) and remembers the choice.
+- Dress-up choices and castle stickers are saved on the device automatically;
+  the broom clears the sticker scene and ↩️ removes the last sticker.
 - Everything is one file (`index.html`) — copy it to any device, email it to
   grandparents, it just works.
