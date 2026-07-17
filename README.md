@@ -1,12 +1,13 @@
-# Myla's Magic Kingdom 🦄🌈
+# Magic Kingdom 🦄🌈
 
-A no-reading-required browser game for Myla (almost 5) — unicorns, rainbows,
-princesses and castles — plus a special sparkle mode for little sister Leah (2).
+A no-reading-required browser game for young children — unicorns, rainbows,
+princesses and castles for a 5-year-old, plus a special sparkle mode for a
+2-year-old little sister.
 
 ## How to play
 
 **Play online from any computer or tablet:**
-**https://srepho.github.io/myla-game/**
+**https://srepho.github.io/magic-kingdom/**
 
 Or **just double-click `index.html`** — it opens in any browser. No internet needed.
 
@@ -15,7 +16,7 @@ Best experience:
   stray taps don't hit browser buttons. (Guided Access on iPad is great for the
   2-year-old.)
 - **Turn the sound on** 🔊 (top-right button on the home screen) — the game *speaks*
-  its instructions, so Myla never needs to read anything.
+  its instructions, so no reading is needed.
 
 ## The games
 
@@ -26,8 +27,8 @@ Best experience:
 - 🏰 **Castle Stickers** — pick a sticker at the bottom, then tap anywhere on the
   castle to stamp it. The broom 🧹 sweeps the scene clean.
 - 🔤 **Letter Bubbles** — gentle letter recognition: the game says a letter out
-  loud and Myla finds it. It spells M-Y-L-A first, then L-E-A-H. Wrong taps just
-  wobble — there's no way to lose.
+  loud and the child finds it. It spells the girls' own names first, then
+  friendly words. Wrong taps just wobble — there's no way to lose.
 - 🦋 **Counting Garden** — count 1–5 butterflies, flowers and other garden
   friends. Each tap counts aloud, with a celebration after the last one.
 - 🎴 **Magic Matching** — find four pairs of friendly pictures. Cards simply
@@ -39,8 +40,8 @@ Best experience:
   the letter tiles in order. Faint letters sit in the slots, so it starts as
   shape-matching and grows into real spelling. The game spells each finished
   word aloud.
-- 👶 **Leah's Sparkle Party** — for the 2-year-old: tapping anywhere makes
-  fireworks and chimes, and friendly animals pop up. No wrong answers.
+- 👶 **Sparkle Party** — for the 2-year-old: tapping anywhere makes fireworks
+  and chimes, and friendly animals pop up. No wrong answers.
 
 ## For the grown-ups
 
