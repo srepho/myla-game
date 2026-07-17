@@ -80,6 +80,8 @@
   .card.c-leah{background:#fff3d1;}
   .card.c-count{background:#fff0dc;}
   .card.c-memory{background:#e8e4ff;}
+  .card.c-math{background:#e1ffe9;}
+  .card.c-spell{background:#ffe9fb;}
 
   /* ---------- generic game header ---------- */
   .game-title{margin-top:2.5vmin;font-size:5.5vmin;font-weight:800;
@@ -188,7 +190,7 @@
     color:rgba(90,61,122,.35);box-shadow:var(--shadow);}
   #letter-name-row span.won{background:var(--candy-sun);color:var(--ink);animation:popWin .4s ease;}
   @keyframes popWin{50%{transform:scale(1.35) rotate(8deg)}}
-  #letter-bubbles{flex:1;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;
+  #letter-bubbles,#math-answers{flex:1;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;
     gap:4vmin;width:100%;padding:2vmin;}
   .bubble{
     font-size:13vmin;font-weight:800;width:24vmin;height:24vmin;min-width:100px;min-height:100px;
@@ -202,6 +204,33 @@
   .bubble.wrong{animation:wobble .5s ease;}
   @keyframes wobble{0%,100%{transform:translateX(0)}25%{transform:translateX(-2vmin) rotate(-5deg)}
     75%{transform:translateX(2vmin) rotate(5deg)}}
+
+  /* ---------- NUMBER MAGIC ---------- */
+  #math-groups{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:2.5vmin;
+    background:rgba(255,255,255,.65);border-radius:32px;box-shadow:var(--shadow);
+    padding:1.6vmin 3.5vmin;max-width:94vw;margin-top:.5vmin;}
+  .math-group{display:flex;flex-wrap:wrap;justify-content:center;gap:.8vmin;font-size:7vmin;line-height:1;
+    max-width:38vw;}
+  .math-op{font-size:6.5vmin;font-weight:800;color:#f06c8d;}
+  #math-eq{font-size:7vmin;font-weight:800;margin-top:1.4vmin;background:var(--white);
+    padding:.4vmin 5vmin;border-radius:40px;box-shadow:var(--shadow);color:var(--candy-purple);}
+
+  /* ---------- SPELLING BEE ---------- */
+  #spell-picture{font-size:16vmin;line-height:1;margin-top:1.5vmin;cursor:pointer;
+    filter:drop-shadow(0 6px 3px rgba(90,61,122,.2));animation:cardFloat 3.2s ease-in-out infinite;}
+  #spell-slots{display:flex;gap:1.4vmin;margin-top:1.5vmin;font-size:6.5vmin;font-weight:800;}
+  #spell-slots span{width:11vmin;height:11vmin;min-width:48px;min-height:48px;border-radius:20px;
+    display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.5);
+    color:rgba(90,61,122,.3);border:4px dashed rgba(90,61,122,.25);box-shadow:var(--shadow);}
+  #spell-slots span.won{background:var(--candy-sun);color:var(--ink);border:4px solid var(--white);
+    animation:popWin .4s ease;}
+  #spell-tray{flex:1;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;
+    gap:3vmin;width:100%;padding:2vmin;}
+  .spell-tile{font-size:9vmin;font-weight:800;width:16vmin;height:16vmin;min-width:72px;min-height:72px;
+    border-radius:26px;display:flex;align-items:center;justify-content:center;color:var(--white);
+    border:5px solid var(--white);box-shadow:var(--shadow);cursor:pointer;transition:opacity .3s,transform .3s;}
+  .spell-tile.used{opacity:.25;filter:grayscale(1);pointer-events:none;transform:scale(.82);}
+  .spell-tile.wrong{animation:wobble .5s ease;}
 
   /* ---------- LEAH MODE ---------- */
   #leah-area{position:relative;flex:1;width:100%;cursor:pointer;}
@@ -241,7 +270,7 @@
   @keyframes collectItem{to{transform:translateY(-6vmin) scale(0) rotate(20deg);opacity:0}}
 
   /* ---------- MEMORY MEADOW ---------- */
-  #memory-status{display:flex;align-items:center;justify-content:center;gap:1.2vmin;
+  #memory-status,#math-status{display:flex;align-items:center;justify-content:center;gap:1.2vmin;
     min-height:9vmin;font-size:5vmin;font-weight:800;margin:.8vmin 0;}
   .memory-star{opacity:.25;filter:grayscale(1);transition:.25s ease;}
   .memory-star.won{opacity:1;filter:none;transform:scale(1.18);}
@@ -287,7 +316,7 @@
     #memory-grid{grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(2,1fr);}
   }
   @media (prefers-reduced-motion:reduce){
-    .cloud,.twinkle,.title,.card,.bubble,.count-item{animation:none!important;}
+    .cloud,.twinkle,.title,.card,.bubble,.count-item,#spell-picture{animation:none!important;}
     .particle,.flyby,.friend,.celebrate-banner,.sticker,#unicorn-svg.bounce{
       animation-duration:.01ms!important;animation-iteration-count:1!important;}
     .memory-face,.swatch,.meter-dot{transition-duration:.01ms!important;}
@@ -310,6 +339,8 @@
     <button class="btn card c-letters" data-go="letters"><span class="big">🔤</span><span class="label">Letters</span></button>
     <button class="btn card c-count" data-go="count"><span class="big">🦋</span><span class="label">Counting</span></button>
     <button class="btn card c-memory" data-go="memory"><span class="big">🎴</span><span class="label">Matching</span></button>
+    <button class="btn card c-math" data-go="math"><span class="big">🧮</span><span class="label">Number Magic</span></button>
+    <button class="btn card c-spell" data-go="spell"><span class="big">🐝</span><span class="label">Spelling Bee</span></button>
     <button class="btn card c-leah" data-go="leah"><span class="big">👶</span><span class="label">Leah's Sparkles</span></button>
   </div>
 </div>
@@ -487,6 +518,25 @@
   <div class="game-title">🎴 Magic Matching!</div>
   <div id="memory-status" aria-live="polite"></div>
   <div id="memory-grid"></div>
+</div>
+
+<!-- ============ NUMBER MAGIC ============ -->
+<div class="screen" id="math">
+  <button class="btn corner-btn home-btn" data-go="home" aria-label="go home">🏠</button>
+  <div class="game-title">🧮 Number Magic!</div>
+  <div id="math-status" aria-live="polite"></div>
+  <div id="math-groups" aria-hidden="true"></div>
+  <div id="math-eq">1 + 1 = ?</div>
+  <div id="math-answers"></div>
+</div>
+
+<!-- ============ SPELLING BEE ============ -->
+<div class="screen" id="spell">
+  <button class="btn corner-btn home-btn" data-go="home" aria-label="go home">🏠</button>
+  <div class="game-title">🐝 Spelling Bee!</div>
+  <div id="spell-picture">🐱</div>
+  <div id="spell-slots"></div>
+  <div id="spell-tray"></div>
 </div>
 
 <!-- ============ LEAH MODE ============ -->
@@ -1074,7 +1124,166 @@ enterHooks.memory = newMemoryRound;
 exitHooks.memory = () => { clearTimeout(memoryTimer); memoryLocked = true; memoryOpen = []; };
 
 /* =====================================================
-   GAME 7 — LEAH'S SPARKLE PARTY (age 2 mode)
+   GAME 7 — NUMBER MAGIC
+   Gentle addition: count the two emoji groups, then
+   tap the answer bubble. Sums grow slowly, max 10.
+   ===================================================== */
+const mathStatus = document.getElementById('math-status');
+const mathGroups = document.getElementById('math-groups');
+const mathEq = document.getElementById('math-eq');
+const mathAnswers = document.getElementById('math-answers');
+const MATH_EMOJI = [
+  {emoji:'🍓', name:'strawberries'}, {emoji:'🌟', name:'stars'},
+  {emoji:'🧁', name:'cupcakes'},    {emoji:'🦋', name:'butterflies'},
+  {emoji:'🌸', name:'flowers'},     {emoji:'🐥', name:'chicks'},
+  {emoji:'🍎', name:'apples'},      {emoji:'💎', name:'jewels'},
+];
+let mathRound = 0, mathStars = 0, mathLocked = false, mathTimer = null;
+function renderMathStars(){
+  mathStatus.innerHTML = '<span>✨</span>';
+  for(let i=0;i<5;i++){
+    const star = document.createElement('span');
+    star.className = 'memory-star' + (i < mathStars ? ' won' : '');
+    star.textContent = '⭐';
+    mathStatus.appendChild(star);
+  }
+  const end = document.createElement('span'); end.textContent = '✨'; mathStatus.appendChild(end);
+}
+function newMathRound(){
+  mathLocked = false;
+  const maxAddend = Math.min(5, 2 + Math.floor(mathRound / 3));
+  const a = 1 + Math.floor(Math.random()*maxAddend);
+  const b = 1 + Math.floor(Math.random()*maxAddend);
+  const sum = a + b;
+  const friend = MATH_EMOJI[mathRound % MATH_EMOJI.length];
+  const emoji = friend.emoji;
+  mathRound++;
+  mathGroups.innerHTML = '';
+  const groupA = document.createElement('div'); groupA.className = 'math-group';
+  groupA.textContent = emoji.repeat(a);
+  const op = document.createElement('div'); op.className = 'math-op'; op.textContent = '+';
+  const groupB = document.createElement('div'); groupB.className = 'math-group';
+  groupB.textContent = emoji.repeat(b);
+  mathGroups.append(groupA, op, groupB);
+  mathEq.textContent = a + ' + ' + b + ' = ?';
+  const distractors = shuffle([sum-2, sum-1, sum+1, sum+2].filter(n => n >= 1 && n !== sum)).slice(0,2);
+  const options = shuffle([sum, ...distractors]);
+  mathAnswers.innerHTML = '';
+  options.forEach((n,i)=>{
+    const bub = document.createElement('button');
+    bub.className = 'btn bubble';
+    bub.textContent = n;
+    bub.style.background = BUBBLE_COLORS[i];
+    bub.addEventListener('pointerdown', e=>{
+      e.stopPropagation();
+      if(mathLocked) return;
+      if(n === sum){
+        mathLocked = true;
+        mathEq.textContent = a + ' + ' + b + ' = ' + sum;
+        const r = mathAnswers.getBoundingClientRect();
+        burst(e.clientX - r.left, e.clientY - r.top, mathAnswers, ['⭐','✨','💖']);
+        mathStars++;
+        renderMathStars();
+        if(mathStars >= 5){
+          fanfare(); unicornFlyby(); banner('SUPER!');
+          say('Yes! ' + a + ' plus ' + b + ' makes ' + sum + '. You are a number star!', 300);
+          mathTimer = setTimeout(()=>{ mathStars = 0; renderMathStars(); newMathRound(); }, 3200);
+        }else{
+          twinkleSound();
+          say('Yes! ' + a + ' plus ' + b + ' makes ' + sum + '!');
+          mathTimer = setTimeout(newMathRound, 2300);
+        }
+      }else{
+        bub.classList.remove('wrong'); void bub.offsetWidth; bub.classList.add('wrong');
+        boing();
+        say('Almost! Count all the ' + friend.name + ' together!');
+      }
+    });
+    mathAnswers.appendChild(bub);
+  });
+  say('What is ' + a + ' plus ' + b + '? Count them all!', 300);
+}
+enterHooks.math = () => { mathRound = 0; mathStars = 0; renderMathStars(); newMathRound(); };
+exitHooks.math = () => { clearTimeout(mathTimer); mathLocked = true; };
+
+/* =====================================================
+   GAME 8 — SPELLING BEE
+   See the picture, tap the letter tiles in order.
+   Ghost letters in the slots so no reading is needed —
+   it starts as shape-matching and grows into spelling.
+   ===================================================== */
+const spellPicture = document.getElementById('spell-picture');
+const spellSlots = document.getElementById('spell-slots');
+const spellTray = document.getElementById('spell-tray');
+const SPELL_WORDS = [
+  {word:'CAT', emoji:'🐱'}, {word:'DOG', emoji:'🐶'}, {word:'SUN', emoji:'☀️'},
+  {word:'BEE', emoji:'🐝'}, {word:'PIG', emoji:'🐷'}, {word:'HAT', emoji:'👒'},
+  {word:'STAR', emoji:'⭐'}, {word:'MOON', emoji:'🌙'}, {word:'FISH', emoji:'🐠'},
+  {word:'FROG', emoji:'🐸'}, {word:'CAKE', emoji:'🎂'},
+];
+let spellIdx = 0, spellPos = 0, spellLocked = false, spellTimer = null;
+function renderSpellSlots(word){
+  spellSlots.innerHTML = '';
+  word.split('').forEach((ch,i)=>{
+    const s = document.createElement('span');
+    s.textContent = ch;
+    if(i < spellPos) s.classList.add('won');
+    spellSlots.appendChild(s);
+  });
+}
+function newSpellRound(){
+  spellLocked = false; spellPos = 0;
+  const round = SPELL_WORDS[spellIdx % SPELL_WORDS.length];
+  const word = round.word;
+  spellPicture.textContent = round.emoji;
+  renderSpellSlots(word);
+  const distractors = shuffle(ALPHABET.split('').filter(c => !word.includes(c))).slice(0,3);
+  const tiles = shuffle([...word.split(''), ...distractors]);
+  spellTray.innerHTML = '';
+  tiles.forEach((ch,i)=>{
+    const tile = document.createElement('button');
+    tile.className = 'btn spell-tile';
+    tile.textContent = ch;
+    tile.style.background = BUBBLE_COLORS[i % BUBBLE_COLORS.length];
+    tile.addEventListener('pointerdown', e=>{
+      e.stopPropagation();
+      if(spellLocked || tile.classList.contains('used')) return;
+      const needed = word[spellPos];
+      if(ch === needed){
+        tile.classList.add('used');
+        spellPos++;
+        renderSpellSlots(word);
+        popNote();
+        const r = spellTray.getBoundingClientRect();
+        burst(e.clientX - r.left, e.clientY - r.top, spellTray, ['⭐','✨'], 6);
+        if(spellPos >= word.length){
+          spellLocked = true;
+          fanfare(); unicornFlyby(); banner(word + '!');
+          say(word.split('').join('. ') + '. spells ' + word.toLowerCase() + '! Hooray!', 500);
+          spellIdx++;
+          spellTimer = setTimeout(newSpellRound, 3200);
+        }else{
+          say(needed + '!');
+        }
+      }else{
+        tile.classList.remove('wrong'); void tile.offsetWidth; tile.classList.add('wrong');
+        boing();
+        say('Almost! We need the letter ' + needed + '!');
+      }
+    });
+    spellTray.appendChild(tile);
+  });
+  say('Can you spell ' + word.toLowerCase() + '? Find the letter ' + word[0] + '!', 300);
+}
+spellPicture.addEventListener('pointerdown', ()=>{
+  const round = SPELL_WORDS[spellIdx % SPELL_WORDS.length];
+  say('Spell ' + round.word.toLowerCase() + '!');
+});
+enterHooks.spell = () => { spellIdx = 0; newSpellRound(); };
+exitHooks.spell = () => { clearTimeout(spellTimer); spellLocked = true; };
+
+/* =====================================================
+   GAME 9 — LEAH'S SPARKLE PARTY (age 2 mode)
    Any tap = fireworks. No wrong answers, no goals.
    ===================================================== */
 const leahArea = document.getElementById('leah-area');

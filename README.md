@@ -32,6 +32,13 @@ Best experience:
   friends. Each tap counts aloud, with a celebration after the last one.
 - 🎴 **Magic Matching** — find four pairs of friendly pictures. Cards simply
   turn back over when they do not match, so there is no fail state.
+- 🧮 **Number Magic** — gentle adding-up: two groups of strawberries (or stars,
+  or cupcakes…) to count, then tap the answer bubble. Sums start at 2 and grow
+  slowly, never past 10. Five stars earns a unicorn fly-by.
+- 🐝 **Spelling Bee** — see a picture (cat, dog, sun…), hear the word, and tap
+  the letter tiles in order. Faint letters sit in the slots, so it starts as
+  shape-matching and grows into real spelling. The game spells each finished
+  word aloud.
 - 👶 **Leah's Sparkle Party** — for the 2-year-old: tapping anywhere makes
   fireworks and chimes, and friendly animals pop up. No wrong answers.
 
